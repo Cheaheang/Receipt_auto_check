@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ImportFileController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -14,5 +15,6 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
-});
+    return view('homePage');
+})->name('home');
+Route::post('/importExecute',[ImportFileController::class,'verifyData'])->name('import.file');
