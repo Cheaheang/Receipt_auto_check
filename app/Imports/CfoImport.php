@@ -2,24 +2,41 @@
 
 namespace App\Imports;
 
-use App\Models\CFO;
+use App\Models\Cfo;
 use Maatwebsite\Excel\Concerns\ToModel;
+use Maatwebsite\Excel\Concerns\WithHeadingRow;
+use Maatwebsite\Excel\Imports\HeadingRowFormatter;
 
-class CfoImport implements ToModel
+HeadingRowFormatter::default('none');
+class CfoImport implements ToModel, WithHeadingRow
 {
+
     /**
     * @param array $row
     *
     * @return \Illuminate\Database\Eloquent\Model|null
     */
-    public function model(array $row)
+
+     public function model(array $row)
     {
-        return new CFO([
-            'active_id'=>$row[3],
-            'port'=>$row[11],
-            'pos'=>$row[12],
-            'team_install'=>$row[13],
-            'create_time'=>$row[15],
+        return new Cfo([
+//            'subscriber_id'=>$row['subscriberNo'],
+//            'port'=>$row['PORT'],
+//            'pos'=>$row['POS'],
+//            'team_install'=>$row['team\ install'],
+//            'create_time'=>$row['create\ time'],
+            'work_order'=>$row['Work Order'],
+            'port'=>$row['PORT'],
+            'pos'=>$row['POS'],
+            'team_install'=>$row['Team Install'],
+            'create_time'=>$row['Create Time'],
         ]);
     }
+//$sheet->mergeCells('A1:E1');
+
+//    public function headingRow(): int
+//    {
+////        $sheet->
+//        return 3;
+//    }
 }

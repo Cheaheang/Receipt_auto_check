@@ -17,7 +17,11 @@
     <div style="">
         <div>
             @if(session('success'))
-                <div class="alert alert-success">{{session('success')}}</div>
+                <div class="alert alert-success">{{session('success')}}
+                </div>
+            @elseif(session('fail'))
+                <div class="alert alert-danger">{{session('fail')}}
+                </div>
             @endif
         </div>
         <div>
@@ -69,7 +73,7 @@
                                 class="btn btn-success" style="margin-bottom: 34px">Submit file
                         </button>
                         <button type="button" class="btn btn-danger"  style="margin-bottom: 34px" >
-                            <a href="" style="text-decoration: none; color: white;">Back</a>
+                            <a href="{{route('export.file')}}" style="text-decoration: none; color: white;">Download</a>
                         </button>
                     </div>
 

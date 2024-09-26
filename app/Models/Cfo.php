@@ -5,12 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class CFO extends Model
+class Cfo extends Model
 {
     use HasFactory;
     protected $fillable = [
-        'work_orders',
-        'subscriber_id',
+        'work_order',
         'port',
         'pos',
         'team_install',

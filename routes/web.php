@@ -18,3 +18,4 @@ Route::get('/', function () {
     return view('homePage');
 })->name('home');
 Route::post('/importExecute',[ImportFileController::class,'verifyData'])->name('import.file');
+Route::get('/export',[ImportFileController::class,'export_excel'])->name('export.file');

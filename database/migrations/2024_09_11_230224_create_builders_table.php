@@ -11,17 +11,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('cfos', function (Blueprint $table) {
+        Schema::create('builders', function (Blueprint $table) {
             $table->id();
             $table->string('active_id');
             $table->string('name');
             $table->string('active');
             $table->string('date');
-            $table->string('infrastructure');
+            $table->string('infrastructure')->nullable();
             $table->string('jobs_id');
             $table->string('category');
             $table->string('installation_order');
-
             $table->timestamps();
         });
     }
@@ -31,6 +30,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('cfos');
+        Schema::dropIfExists('builders');
     }
 };

@@ -4,8 +4,11 @@ namespace App\Imports;
 
 use App\Models\Builder;
 use Maatwebsite\Excel\Concerns\ToModel;
+use Maatwebsite\Excel\Concerns\WithHeadingRow;
+use Maatwebsite\Excel\Imports\HeadingRowFormatter;
 
-class BuilderImport implements ToModel
+HeadingRowFormatter::default('none');
+class BuilderImport implements ToModel,withHeadingRow
 {
     /**
     * @param array $row
@@ -16,13 +19,14 @@ class BuilderImport implements ToModel
     {
         return new Builder([
 
-            'active_id'=>$row[0],
-            'name'=>$row[1],
-            'active'=>$row[2],
-            'date'=>$row[3],
-            'infrastructure'=>$row[4],
-            'jobs_id'=>$row[5],
-            'category'=>$row[6],
+            'active_id'=>$row['id'],
+            'name'=>$row['name'],
+            'active'=>$row['active'],
+            'date'=>$row['date'],
+            'infrastructure'=>$row['infrastructure'],
+            'jobs_id'=>$row['jobs'],
+            'category'=>$row['category'],
+            'installation_order'=>$row['installation_order'],
         ]);
     }
 }
