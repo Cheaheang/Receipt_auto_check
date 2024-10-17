@@ -20,16 +20,12 @@ class CfoImport implements ToModel, WithHeadingRow
      public function model(array $row)
     {
         return new Cfo([
-//            'subscriber_id'=>$row['subscriberNo'],
-//            'port'=>$row['PORT'],
-//            'pos'=>$row['POS'],
-//            'team_install'=>$row['team\ install'],
-//            'create_time'=>$row['create\ time'],
-            'work_order'=>$row['Work Order'],
-            'port'=>$row['PORT'],
-            'pos'=>$row['POS'],
-            'team_install'=>$row['Team Install'],
-            'create_time'=>$row['Create Time'],
+            'Work Order'=>$row['Work Order'],
+            'PORT'=>$row['PORT'],
+            'POS'=>$row['POS'],
+            'Team Install'=>$row['Team Install'],
+            'Create Time'=>$row['Create Time'],
+
         ]);
     }
 //$sheet->mergeCells('A1:E1');

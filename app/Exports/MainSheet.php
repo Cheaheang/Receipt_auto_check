@@ -21,8 +21,8 @@ class MainSheet implements withMultipleSheets
     public function sheets(): array
     {
         return [
-            new Sheets\NotDuplicateSheet($this->notDuplicate),
-            new Sheets\DuplicateSheet($this->duplicate),
+           'Not_Duplicate'=> new Sheets\NotDuplicateSheet($this->notDuplicate),
+           'Duplicate'=>  new Sheets\DuplicateSheet($this->duplicate),
         ];
     }
 }
