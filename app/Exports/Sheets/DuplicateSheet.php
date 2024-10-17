@@ -2,7 +2,6 @@
 
 namespace App\Exports\Sheets;
 
-use App\Models\Admin;
 use Maatwebsite\Excel\Concerns\FromArray;
 use Maatwebsite\Excel\Concerns\FromCollection;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;

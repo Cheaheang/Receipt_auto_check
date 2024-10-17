@@ -3,7 +3,6 @@
 namespace App\Exports;
 
 use App\Models\Cfo;
-use App\Models\CfoExport;
 use Maatwebsite\Excel\Concerns\FromArray;
 use Maatwebsite\Excel\Concerns\WithMultipleSheets;
 use Maatwebsite\Excel\Excel;
@@ -21,8 +20,8 @@ class MainSheet implements withMultipleSheets
     public function sheets(): array
     {
         return [
-           'Not_Duplicate'=> new Sheets\NotDuplicateSheet($this->notDuplicate),
-           'Duplicate'=>  new Sheets\DuplicateSheet($this->duplicate),
+           'Check'=> new Sheets\NotDuplicateSheet($this->notDuplicate),
+           'Pay'=>  new Sheets\DuplicateSheet($this->duplicate),
         ];
     }
 }

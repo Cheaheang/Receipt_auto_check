@@ -37,14 +37,10 @@ class ImportFileController extends Controller
         $companyFile = $request->file("cfo");
         $validateBuilderHeader = (new HeadingRowImport())->toArray($builderFile);
         $validateCompanyHeader = (new HeadingRowImport())->toArray($companyFile);
-        $telecomStoreAsArray = Excel::toArray(new TelecomImport(), $companyFile);
-//        dd($validateCompanyHeader,$telecomStoreAsArray);
         $builderStoreAsArray = Excel::toArray(new BuilderImport(), $builderFile);
         if ($validateBuilderHeader[0][0][0] == "id" && $validateBuilderHeader[0][0][1] == "name" && $validateBuilderHeader[0][0][2] == "active" &&
             $validateBuilderHeader[0][0][3] == "date" && $validateBuilderHeader[0][0][4] == "infrastructure" && $validateBuilderHeader[0][0][5] == "jobs" &&
             $validateBuilderHeader[0][0][6] == "category" && $validateBuilderHeader[0][0][7] == "installation_order") {
-            if ($request->status == 'active') {
-                echo "active";
                 if ($company == 'cfocn') {
                     if ($validateCompanyHeader[0][0][0] == "work_order" && $validateCompanyHeader[0][0][1] == "port" &&
                         $validateCompanyHeader[0][0][2] == "pos" && $validateCompanyHeader[0][0][3] == "team_install" &&
@@ -75,7 +71,6 @@ class ImportFileController extends Controller
                         $validateCompanyHeader[0][0][3] == "new_circuit_id" && $validateCompanyHeader[0][0][18] == "total_nrc"){
                         $tctStoreAsArray = Excel::toArray(new TctImport(), $companyFile);
                         foreach ($builderStoreAsArray[0] as $key => $builderData) {
-//                            dd($builderData['jobs']);
                             if ($builderData['jobs'] != null) {
                             foreach ($tctStoreAsArray as $key3 => $tctData) {
                                     if ($builderData['jobs'] != $tctData[$key3]["New circuit ID"]) {
@@ -97,7 +92,6 @@ class ImportFileController extends Controller
 
                 }
                 elseif ($company == 'adi') {
-//                    dd($validateCompanyHeader[0][0]);
                     if(
                         $validateCompanyHeader[0][0][1] == "aid" && $validateCompanyHeader[0][0][2] == "sid" &&
                         $validateCompanyHeader[0][0][3] == "customer_name" && $validateCompanyHeader[0][0][4] == "qty"  &&
@@ -149,18 +143,19 @@ class ImportFileController extends Controller
                         return redirect("/")->with("incorrectCompany", "Invalid Company Column name");
                     }
                 }
-                } else {
-                    echo "terminate";
-                }
+
             } else {
                 return redirect("/")->with("incorrectBuilder", "Invalid Builder Name");
             }
-//        dd($negativeCounter,$positive);
-            if ($negativeCounter > 0) {
-                echo "negative value  ";
-                return Excel::download(new MainSheet($negativeData, $positiveData), 'CfoCn_file.xlsx');
+                if($request->input('status') =='active'){
+
+                    return Excel::download(new MainSheet($negativeData, $positiveData),  'Active List.xlsx');
+                }else{
+                    return Excel::download(new MainSheet($negativeData, $positiveData),  'Terminated List.xlsx');
+
+                }
+
             }
-            return Excel::download(new MainSheet($negativeData, $positiveData), 'CfoCn_file.xlsx');
-        }
+//        }
 
 }

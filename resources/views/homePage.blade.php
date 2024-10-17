@@ -12,12 +12,6 @@
         .input_width{
             width: 100%;
         }
-        .hide_dropDown_arrow{
-            select::-ms-expand {
-                display: none;
-            }
-
-        }
     </style>
 </head>
 <body
