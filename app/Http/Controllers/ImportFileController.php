@@ -143,6 +143,11 @@ class ImportFileController extends Controller
                         return redirect("/")->with("incorrectCompany", "Invalid Company Column name");
                     }
                 }
+                else{
+
+                    return redirect("/")->with("invalidCompany", "Invalid Company name");
+                }
+
 
             } else {
                 return redirect("/")->with("incorrectBuilder", "Invalid Builder Name");

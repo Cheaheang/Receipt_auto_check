@@ -30,6 +30,9 @@
             @elseif(session('fail'))
                 <div class="alert alert-danger">{{session('fail')}}
                 </div>
+            @elseif(session('invalidCompany'))
+                <div class="alert alert-danger">{{session('invalidCompany')}}
+                </div>
             @endif
         </div>
         <div>
