@@ -114,8 +114,7 @@ class ImportFileController extends Controller
                                 }
                             }
                         }
-                    }else{
-                        return redirect("/")->with("incorrectCompany", "Invalid Company Column name");
+                    }else{ return redirect("/")->with("incorrectCompany", "Invalid Company Column name");
                     }
                 }
                 elseif ($company == 'telecom') {
@@ -143,10 +142,7 @@ class ImportFileController extends Controller
                         return redirect("/")->with("incorrectCompany", "Invalid Company Column name");
                     }
                 }
-                else{
 
-                    return redirect("/")->with("invalidCompany", "Invalid Company name");
-                }
 
 
             } else {
