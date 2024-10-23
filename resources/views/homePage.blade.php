@@ -23,16 +23,13 @@
         <div>
         <div>
             @if(session('incorrectBuilder'))
-                <div class="alert alert-warning">{{session('incorrectBuilder')}}
+                <div class="alert alert-primary">{{session('incorrectBuilder')}}
                 </div>
             @elseif(session('incorrectCompany'))
                 <div class="alert alert-warning">{{session('incorrectCompany')}}
                 </div>
             @elseif(session('fail'))
                 <div class="alert alert-danger">{{session('fail')}}
-                </div>
-            @elseif(session('incorrectCompany'))
-                <div class="alert alert-danger">{{session('incorrectCompany')}}
                 </div>
             @endif
         </div>
