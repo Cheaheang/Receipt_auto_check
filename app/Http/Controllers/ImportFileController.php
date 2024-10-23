@@ -27,58 +27,61 @@ class ImportFileController extends Controller
 
     public function verifyData(Request $request)
     {
+        $total=0;
         $verification = false;
-        $negativeCounter = 0;
+        $duplicateCount = 0;
+        $title="";
         $company = $request->input('company');
-        $negativeData = array();
-        $positiveCounter = 0;
-        $positiveData = array();
+        $duplicate = array();
+        $notDuplicateCount = 0;
+        $notDuplicate= array();
         $builderFile = $request->file("builder");
         $companyFile = $request->file("cfo");
         $validateBuilderHeader = (new HeadingRowImport())->toArray($builderFile);
         $validateCompanyHeader = (new HeadingRowImport())->toArray($companyFile);
-        $builderStoreAsArray = Excel::toArray(new BuilderImport(), $builderFile);
+        $buildingStoreAsArray = Excel::toArray(new BuilderImport(), $builderFile);
+        $notDuplicate = $buildingStoreAsArray[0];
+//        dd($storeDuplicateBuilding[0]);
         if ($validateBuilderHeader[0][0][0] == "id" && $validateBuilderHeader[0][0][1] == "name" && $validateBuilderHeader[0][0][2] == "active" &&
             $validateBuilderHeader[0][0][3] == "date" && $validateBuilderHeader[0][0][4] == "infrastructure" && $validateBuilderHeader[0][0][5] == "jobs" &&
             $validateBuilderHeader[0][0][6] == "category" && $validateBuilderHeader[0][0][7] == "installation_order") {
+//            dd($validateCompanyHeader[3]);
+            $arr = [];
                 if ($company == 'cfocn') {
+                    $title = "CFOCN";
                     if ($validateCompanyHeader[0][0][0] == "work_order" && $validateCompanyHeader[0][0][1] == "port" &&
                         $validateCompanyHeader[0][0][2] == "pos" && $validateCompanyHeader[0][0][3] == "team_install" &&
                         $validateCompanyHeader[0][0][4] == "create_time") {
                         $cfoStoreAsArray = Excel::toArray(new CfoImport(), $companyFile);
-                        foreach ($builderStoreAsArray[0] as $key => $builderData) {
-                            if ($builderData['jobs'] != null) {
-                            foreach ($cfoStoreAsArray as $key2 => $cfoData) {
-                                    if ($builderData['jobs'] != $cfoData[$key2]['Work Order']) {
-                                        array_push($positiveData, $builderData);
-                                        $positiveCounter++;
-                                    } else {
-                                        array_push($negativeData, $builderData);
-                                        $negativeCounter++;
+//                        dd($storeDuplicateBuilding);
+                        foreach ($buildingStoreAsArray[0] as $key => $builderData) {
+//                            dd($builderData[1]['jobs']);
+//                            dd($builderStoreAsArray[$key]);
+                            foreach ($cfoStoreAsArray[0] as $key2 => $cfoData) {
+//                                dd($cfoStoreAsArray[0][0]);
+                                if ($builderData['jobs'] != null) {
+                                    if ($builderData['jobs'] == $cfoData['Work Order']) {
+                                        array_push($duplicate, $builderData);
+                                        unset($notDuplicate[$key]);
                                     }
                                 }
                             }
                         }
-                    } else {
-
-                        return redirect("/")->with("incorrectCompany", "Invalid Company  Column name");
 
                     }
 
                 }
                 elseif ($company == 'tct') {
+                    $title = "TCT";
                     if ($validateCompanyHeader[0][0][1] == "tct_cid" && $validateCompanyHeader[0][0][2] == "tct_sid" &&
                         $validateCompanyHeader[0][0][3] == "new_circuit_id" && $validateCompanyHeader[0][0][18] == "total_nrc"){
                         $tctStoreAsArray = Excel::toArray(new TctImport(), $companyFile);
-                        foreach ($builderStoreAsArray[0] as $key => $builderData) {
+                        foreach ($buildingStoreAsArray[0] as $key => $builderData) {
                             if ($builderData['jobs'] != null) {
                             foreach ($tctStoreAsArray as $key3 => $tctData) {
-                                    if ($builderData['jobs'] != $tctData[$key3]["New circuit ID"]) {
-                                        array_push($positiveData, $builderData);
-                                        $positiveCounter++;
-                                    }else{
-                                        array_push($negativeData, $builderData);
-                                        $negativeCounter++;
+                                    if ($builderData['jobs'] == $tctData[$key3]["New circuit ID"]) {
+                                        array_push($duplicate, $builderData);
+                                        unset($notDuplicate[$key]);
                                     }
                                 }
                             }
@@ -92,6 +95,7 @@ class ImportFileController extends Controller
 
                 }
                 elseif ($company == 'adi') {
+                    $title = "ADI";
                     if(
                         $validateCompanyHeader[0][0][1] == "aid" && $validateCompanyHeader[0][0][2] == "sid" &&
                         $validateCompanyHeader[0][0][3] == "customer_name" && $validateCompanyHeader[0][0][4] == "qty"  &&
@@ -99,17 +103,14 @@ class ImportFileController extends Controller
                         $validateCompanyHeader[0][0][7] == "amount" && $validateCompanyHeader[0][0][8] == "vat" &&
                         $validateCompanyHeader[0][0][9] == "total_amount" && $validateCompanyHeader[0][0][10] == "invoice_description") {
                         $adiStoreAsArray = Excel::toArray(new AdiImport(), $companyFile);
-                        foreach ($builderStoreAsArray[0] as $key => $builderData) {
+                        foreach ($buildingStoreAsArray[0] as $key => $builderData) {
                             if ($builderData['jobs'] != null) {
                                 foreach ($adiStoreAsArray as $key4 => $adiData) {
 
-                                    if ($builderData['jobs'] != $adiData[$key4]['AID']) {
-                                        array_push($positiveData, $builderData);
-                                        $positiveCounter++;
-                                    }
+
                                     if ($builderData['jobs'] == $adiData[$key4]['AID']) {
-                                        array_push($negativeData, $builderData);
-                                        $negativeCounter++;
+                                        array_push($duplicate, $builderData);
+                                        unset($notDuplicate[$key]);
                                     }
                                 }
                             }
@@ -118,21 +119,18 @@ class ImportFileController extends Controller
                     }
                 }
                 elseif ($company == 'telecom') {
-
+$title = "Telecom";
                     if ($validateCompanyHeader[0][0][1] == "account_no" && $validateCompanyHeader[0][0][2] == "id" &&
                         $validateCompanyHeader[0][0][3] == "name_customer" && $validateCompanyHeader[0][0][5] == "project" &&
                         $validateCompanyHeader[0][0][6] == "issue_date" && $validateCompanyHeader[0][0][7] == "complete_date") {
                     $telecomStoreAsArray = Excel::toArray(new TelecomImport(), $companyFile);
-                    foreach ($builderStoreAsArray[0] as $key => $builderData) {
+                    foreach ($buildingStoreAsArray[0] as $key => $builderData) {
                         if ($builderData['jobs'] != null) {
                             foreach ($telecomStoreAsArray as $key5 => $telecom) {
-                                if ($builderData['jobs'] != $telecom[$key5]['ID']) {
-                                    array_push($positiveData, $builderData);
-                                    $positiveCounter++;
-                                }
+
                                 if ($builderData['jobs'] == $telecom[$key5]['ID']) {
-                                    array_push($negativeData, $builderData);
-                                    $negativeCounter++;
+                                    array_push($duplicate, $builderData);
+                                    unset($notDuplicate[$key]);
                                 }
                             }
                         }
@@ -148,15 +146,17 @@ class ImportFileController extends Controller
             } else {
                 return redirect("/")->with("incorrectBuilder", "Invalid Builder Name");
             }
+//        dd($duplicate, $storeDuplicateBuilding);
                 if($request->input('status') =='active'){
-
-                    return Excel::download(new MainSheet($negativeData, $positiveData),  'Active List.xlsx');
+                    $fileName = $title." Active List";
                 }else{
-                    return Excel::download(new MainSheet($negativeData, $positiveData),  'Terminated List.xlsx');
+                    $fileName = $title." Terminated List";
 
                 }
+//dd($fileName);/
+                    return Excel::download(new MainSheet($duplicate , $notDuplicate),  "$fileName.xlsx");
 
-            }
+    }
 //        }
 
 }

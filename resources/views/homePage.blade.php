@@ -20,6 +20,7 @@
     style="display: flex;padding: 32px; justify-content: center;align-content: center; width: 60%;height: 80%;background-color: white">
 
     <div style="">
+        <div style="width: 20%">
         <div>
             @if(session('incorrectBuilder'))
                 <div class="alert alert-warning">{{session('incorrectBuilder')}}
@@ -34,6 +35,7 @@
                 <div class="alert alert-danger">{{session('incorrectCompany')}}
                 </div>
             @endif
+        </div>
         </div>
         <div>
             <h1>Insert data</h1>

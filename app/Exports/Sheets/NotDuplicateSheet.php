@@ -29,6 +29,6 @@ class NotDuplicateSheet implements FromArray, WithHeadings, WithTitle
         return ['Active ID','Name', 'Active' , 'Date' , 'Infrastructure', 'Jobs', 'Category', 'installation_order'];
     }
     public function title(): string{
-        return 'Not Duplicate Sheet';
+        return 'Not Match';
     }
 }
