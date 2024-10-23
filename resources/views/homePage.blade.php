@@ -17,10 +17,10 @@
 <body
     style="background-color: gray ;display: flex;align-items:center;justify-content: center;width: 100%;height: 600px">
 <div
-    style="display: flex;padding: 32px; justify-content: center;align-content: center; width: 60%;height: 80%;background-color: white">
+    style="display: flex;padding: 32px; justify-content: center;align-content: center; width: 60%;height: 100%;background-color: white">
 
     <div style="">
-        <div style="width: 20%">
+        <div>
         <div>
             @if(session('incorrectBuilder'))
                 <div class="alert alert-warning">{{session('incorrectBuilder')}}

@@ -78,8 +78,8 @@ class ImportFileController extends Controller
                         $tctStoreAsArray = Excel::toArray(new TctImport(), $companyFile);
                         foreach ($buildingStoreAsArray[0] as $key => $builderData) {
                             if ($builderData['jobs'] != null) {
-                            foreach ($tctStoreAsArray as $key3 => $tctData) {
-                                    if ($builderData['jobs'] == $tctData[$key3]["New circuit ID"]) {
+                            foreach ($tctStoreAsArray[0] as $key3 => $tctData) {
+                                    if ($builderData['jobs'] == $tctData["New circuit ID"]) {
                                         array_push($duplicate, $builderData);
                                         unset($notDuplicate[$key]);
                                     }
@@ -105,10 +105,10 @@ class ImportFileController extends Controller
                         $adiStoreAsArray = Excel::toArray(new AdiImport(), $companyFile);
                         foreach ($buildingStoreAsArray[0] as $key => $builderData) {
                             if ($builderData['jobs'] != null) {
-                                foreach ($adiStoreAsArray as $key4 => $adiData) {
+                                foreach ($adiStoreAsArray[0] as $key4 => $adiData) {
 
 
-                                    if ($builderData['jobs'] == $adiData[$key4]['AID']) {
+                                    if ($builderData['jobs'] == $adiData['AID']) {
                                         array_push($duplicate, $builderData);
                                         unset($notDuplicate[$key]);
                                     }
@@ -126,9 +126,9 @@ $title = "Telecom";
                     $telecomStoreAsArray = Excel::toArray(new TelecomImport(), $companyFile);
                     foreach ($buildingStoreAsArray[0] as $key => $builderData) {
                         if ($builderData['jobs'] != null) {
-                            foreach ($telecomStoreAsArray as $key5 => $telecom) {
+                            foreach ($telecomStoreAsArray[0] as $key5 => $telecom) {
 
-                                if ($builderData['jobs'] == $telecom[$key5]['ID']) {
+                                if ($builderData['jobs'] == $telecom['ID']) {
                                     array_push($duplicate, $builderData);
                                     unset($notDuplicate[$key]);
                                 }
