@@ -10,12 +10,7 @@ class Builder extends Model
     use HasFactory;
     protected $fillable = [
         'active_id',
-        'name',
-        'active',
-        'date',
         'infrastructure',
-        'jobs_id',
-        'category',
-        'installation_order'
+        'jobs'
     ];
 }

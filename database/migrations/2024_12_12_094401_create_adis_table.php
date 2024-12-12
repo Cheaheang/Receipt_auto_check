@@ -11,14 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('cfos', function (Blueprint $table) {
+        Schema::create('adis', function (Blueprint $table) {
             $table->id();
-            $table->string('subscriber_id');
-            $table->string('port');
-            $table->string('pos');
-            $table->string('team_install');
-            $table->string('create_time');
-
             $table->timestamps();
         });
     }
@@ -28,6 +22,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('cfos');
+        Schema::dropIfExists('adis');
     }
 };

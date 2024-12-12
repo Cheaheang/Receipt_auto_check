@@ -52,7 +52,7 @@
                             <input required name="builder" id="builder" type="file" class="form-control" placeholder="Recipient's username"
                               aria-label="Recipient's username" aria-describedby="basic-addon2">
                         </div>
-                    <label for="">Select CFO order file :</label>
+                    <label for="">Select Infrastructure type file :</label>
                     <div class="input-group mb-3 input_width">
                         <input required name="cfo" id="cfo" type="file" class="form-control" placeholder="Recipient's username"
                                aria-label="Recipient's username" aria-describedby="basic-addon2">
@@ -73,11 +73,11 @@
                         <label>Status :</label>
                         <div style="padding-bottom: 21px;display: flex;justify-content: space-evenly">
                             <div>
-                        <input type="radio" value="active" name="status" id="active_status">
+                        <input type="radio" value="Active" name="status" id="active_status">
                         <label>Active</label>
                             </div>
                             <div>
-                            <input type="radio" value="terminated" name="status" id="terminated_status">
+                            <input type="radio" value="Terminated" name="status" id="terminated_status">
                             <label>Terminated</label>
                             </div>
                         </div>
