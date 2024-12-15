@@ -9,8 +9,11 @@ use App\Imports\CfoImport;
 use App\Imports\TctImport;
 use App\Imports\TelecomImport;
 use App\Imports\UsersImport;
+use App\Models\Adi;
 use App\Models\Builder;
-use App\Models\Cfo;
+use App\Models\Cfocn;
+use App\Models\Tct;
+use App\Models\Telecom;
 use App\Models\User;
 use http\Header;
 use Illuminate\Contracts\Session\Session;
@@ -60,6 +63,7 @@ class ImportFileController extends Controller
                 $validateCompanyHeader[0][0][4] == "create_time") {
                 $cfoStoreAsArray = Excel::toArray(new CfoImport(), $companyFile);
                 $selectData = Builder::where('infrastructure', "CFO")->get();
+
                 foreach ($buildingStoreAsArray[0] as $key => $builderData) {
                     foreach ($cfoStoreAsArray[0] as $key2 => $cfoData) {
                         if ($builderData['jobs'] != null) {
@@ -230,67 +234,46 @@ class ImportFileController extends Controller
             }
                 if ($company == 'cfocn') {
                     $title = "CFOCN";
-                    $selectNeedData = Builder::where('infrastructure',"LIKE","%".$title."%")->get();
-                    $notDuplicate= $selectNeedData->toArray();
+                    $selectNeedData = Builder::where('infrastructure',"LIKE","%"."CFOCN"."%")->get()->toArray();
+               //     $notDuplicate= $selectNeedData->toArray();
+                    $saveCfocn = Excel::import(new CfoImport(), $companyFile);
                     if ($validateCompanyHeader[0][0][0] == "work_order" && $validateCompanyHeader[0][0][1] == "port" &&
                         $validateCompanyHeader[0][0][2] == "pos" && $validateCompanyHeader[0][0][3] == "team_install" &&
                         $validateCompanyHeader[0][0][4] == "create_time") {
-                        $cfoStoreAsArray = Excel::toArray(new CfoImport(), $companyFile);
-                        $notMatch = $cfoStoreAsArray[0];
-                            foreach ($cfoStoreAsArray[0] as $key => $cfoData) {
-                                foreach ($buildingStoreAsArray[0] as $key2 => $builderData) {
-                                if ($builderData['jobs'] != null) {
-                                    if ($builderData['jobs'] == $cfoData['Work Order']) {
-                                        array_push($match, $cfoData);
-                                        unset($notDuplicate[$key]);
-                                        unset($notMatch[$key]);
-                                    }
-                                }
-                            }
-                        }
+//                        $notMatch = $cfoStoreAsArray[0];
+                        $nonMatchingRecords = DB::table('cfocns')
+                            ->rightJoin('builders', 'cfocns.work_order', '=', 'builders.jobs')
+                            ->whereNull('cfocns.work_order')
+//                            ->select('cfocns.work_order','cfocns.port','cfocns.pos','cfocns.team_install','cfocns.create_time')
+                            ->select('cfocns.*')
+                        ->get();
+                        $matchingRecords = DB::table('cfocns')
+                            ->leftJoin('builders', 'cfocns.work_order', '!=', 'builders.jobs')
+                            ->whereNull('cfocns.work_order')
+//                            ->select('cfocns.work_order','cfocns.port','cfocns.pos','cfocns.team_install','cfocns.create_time')
+                            ->select('cfocns.*')
+                            ->get();
+                        $nonMatch = $nonMatchingRecords->toArray();
+                        $matching = $matchingRecords->toArray();
                     }
 
                     $companyHeader = ['Work Order','PORT','POS','Team Install','Create Time'];
                 }
                 elseif ($company == 'tct') {
                     $title = "TCT";
+                    $saveTct = Excel::import(new TctImport(), $companyFile);
                     $selectNeedData = Builder::where('infrastructure',"LIKE","%".$title."%")->get();
-                    $notDuplicate= $selectNeedData->toArray();
                     if ($validateCompanyHeader[0][0][1] == "tct_cid" && $validateCompanyHeader[0][0][2] == "tct_sid" &&
                         $validateCompanyHeader[0][0][3] == "new_circuit_id" && $validateCompanyHeader[0][0][18] == "total_nrc"){
                         $tctStoreAsArray = Excel::toArray(new TctImport(), $companyFile);
                         $notMatch = $tctStoreAsArray[0];
-//
-
-//                            foreach ($tctStoreAsArray[0] as $key => $tctData) {
-//                                foreach ($selectNeedData as $key2 => $builderData) {
-//                                if ($builderData['jobs'] != null) {
-//                                    if ($builderData['jobs'] == $tctData['New circuit ID']) {
-//                                        array_push($match, $tctData);
-//                                        unset($notDuplicate[$key]);
-//                                        unset($notMatch[$key]);
-//                                    }
-//                                }
-//                            }
-//                        }
-                        // Step 1: Create a hash map from $buildingStoreAsArray for quick lookup
-                        $jobsMap = [];
-                        foreach ($buildingStoreAsArray[0] as $builderData) {
-                            if ($builderData['jobs'] != null) {
-                                $jobsMap[$builderData['jobs']] = $builderData;
-                            }
-                        }
-
-// Step 2: Compare $cfoStoreAsArray against the hash map
-                        foreach ($tctStoreAsArray[0] as $key => $tctData) {
-                            if (isset($jobsMap[$tctData['New circuit ID']])) {
-                                array_push($match, $tctData);
-                                unset($notDuplicate[$key]);
-                                unset($notMatch[$key]);
-                            }
-                        }
-
-                        $companyHeader = ['TCT Id','TCT SID','New circuit ID','Status','Total NRC'];
+                        $nonMatchingRecords = DB::table('tcts')
+                            ->leftJoin('builders', 'tcts.new_circuit_id', '=', 'builders.jobs')
+                            ->whereNull('builders.jobs')
+                            ->select('tcts.*')
+                            ->get();
+                        $match = $nonMatchingRecords->toArray();
+                        $companyHeader = ['TCT Id','TCT SID','New circuit ID','Total NRC'];
                     }
                     else {
                         return redirect("/")->with("incorrectCompany", "Invalid Company Column name");
@@ -325,6 +308,7 @@ class ImportFileController extends Controller
                 elseif ($company == 'telecom') {
                     $title = "Telecom";
                     $selectNeedData = Builder::where('infrastructure', "LIKE", "%" . $title . "%")->get();
+                    $selectNeedData->toArray();
                     if ($validateCompanyHeader[0][0][1] == "account_no" && $validateCompanyHeader[0][0][2] == "id" &&
                         $validateCompanyHeader[0][0][3] == "name_customer" && $validateCompanyHeader[0][0][5] == "project" &&
                         $validateCompanyHeader[0][0][6] == "issue_date" && $validateCompanyHeader[0][0][7] == "complete_date") {
@@ -338,10 +322,6 @@ class ImportFileController extends Controller
                                                 array_push($match, $telecomData);
                                                 unset($notDuplicate[$key]);
                                                 unset($notMatch[$key]);
-
-//                                                array_push($match, $tctData);
-//                                                unset($notDuplicate[$key]);
-//                                                unset($notMatch[$key]);
                                             }
                                         }
                                     }
@@ -358,9 +338,20 @@ class ImportFileController extends Controller
             } else {
                 return redirect("/")->with("incorrectBuilder", "Invalid Builder Name");
             }
-                    $fileName = $title." ".$request->input('status')." List";
+        $fileName = $title." ".$request->input('status')." List";
+
         $deleteDataFromDatabase = Builder::truncate();
-                    return Excel::download(new MainSheet($match , $notDuplicate, $notMatch, $companyHeader),  "$fileName.xlsx");
+        if($title == "Telecom"){
+            $deleteDataFromCompany = Telecom::truncate();
+        }elseif($title == "TCT"){
+            $deleteDataFromCompany = Tct::truncate();
+        }elseif ($title == "ADI"){
+            $deleteDataFromCompany = Adi::truncate();
+        }elseif ($title == "CFOCN"){
+            $deleteDataFromCompany = Cfocn::truncate();
+        }
+
+        return Excel::download(new MainSheet($selectNeedData , $matching, $nonMatch, $companyHeader),  "$fileName.xlsx");
 
     }
 //        }

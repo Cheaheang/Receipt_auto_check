@@ -13,6 +13,10 @@ return new class extends Migration
     {
         Schema::create('tcts', function (Blueprint $table) {
             $table->id();
+            $table->string('tct_cid');
+            $table->string('tct_sid');
+            $table->string('new_circuit_id');
+            $table->string('total_nrc');
             $table->timestamps();
         });
     }

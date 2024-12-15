@@ -13,6 +13,12 @@ return new class extends Migration
     {
         Schema::create('cfocns', function (Blueprint $table) {
             $table->id();
+            $table->string('active_id');
+            $table->string('work_order');
+            $table->string('port');
+            $table->string('pos');
+            $table->string('team_install');
+            $table->string('create_time');
             $table->timestamps();
         });
     }
