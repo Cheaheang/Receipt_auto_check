@@ -237,15 +237,30 @@ class ImportFileController extends Controller
                         $validateCompanyHeader[0][0][4] == "create_time") {
                         $cfoStoreAsArray = Excel::toArray(new CfoImport(), $companyFile);
                         $notMatch = $cfoStoreAsArray[0];
-                            foreach ($cfoStoreAsArray[0] as $key => $cfoData) {
-                                foreach ($buildingStoreAsArray[0] as $key2 => $builderData) {
-                                if ($builderData['jobs'] != null) {
-                                    if ($builderData['jobs'] == $cfoData['Work Order']) {
-                                        array_push($match, $cfoData);
-                                        unset($notDuplicate[$key]);
-                                        unset($notMatch[$key]);
-                                    }
-                                }
+//                            foreach ($cfoStoreAsArray[0] as $key => $cfoData) {
+//                                foreach ($buildingStoreAsArray[0] as $key2 => $builderData) {
+//                                if ($builderData['jobs'] != null) {
+//                                    if ($builderData['jobs'] == $cfoData['Work Order']) {
+//                                        array_push($match, $cfoData);
+//                                        unset($notDuplicate[$key]);
+//                                        unset($notMatch[$key]);
+//                                    }
+//                                }
+//                            }
+//                        }
+                        $jobsMap = [];
+                        foreach ($buildingStoreAsArray[0] as $builderData) {
+                            if ($builderData['jobs'] != null) {
+                                $jobsMap[$builderData['jobs']] = $builderData;
+                            }
+                        }
+
+                        // Step 2: Compare $cfoStoreAsArray against the hash map
+                        foreach ($cfoStoreAsArray[0] as $key => $cfoData) {
+                            if (isset($jobsMap[$cfoData['Work Order']])) {
+                                array_push($match, $cfoData);
+                                unset($notDuplicate[$key]);
+                                unset($notMatch[$key]);
                             }
                         }
                     }
@@ -260,19 +275,7 @@ class ImportFileController extends Controller
                         $validateCompanyHeader[0][0][3] == "new_circuit_id" && $validateCompanyHeader[0][0][18] == "total_nrc"){
                         $tctStoreAsArray = Excel::toArray(new TctImport(), $companyFile);
                         $notMatch = $tctStoreAsArray[0];
-//
 
-//                            foreach ($tctStoreAsArray[0] as $key => $tctData) {
-//                                foreach ($selectNeedData as $key2 => $builderData) {
-//                                if ($builderData['jobs'] != null) {
-//                                    if ($builderData['jobs'] == $tctData['New circuit ID']) {
-//                                        array_push($match, $tctData);
-//                                        unset($notDuplicate[$key]);
-//                                        unset($notMatch[$key]);
-//                                    }
-//                                }
-//                            }
-//                        }
                         // Step 1: Create a hash map from $buildingStoreAsArray for quick lookup
                         $jobsMap = [];
                         foreach ($buildingStoreAsArray[0] as $builderData) {
@@ -281,7 +284,7 @@ class ImportFileController extends Controller
                             }
                         }
 
-// Step 2: Compare $cfoStoreAsArray against the hash map
+                        // Step 2: Compare $cfoStoreAsArray against the hash map
                         foreach ($tctStoreAsArray[0] as $key => $tctData) {
                             if (isset($jobsMap[$tctData['New circuit ID']])) {
                                 array_push($match, $tctData);
@@ -307,15 +310,30 @@ class ImportFileController extends Controller
                         $validateCompanyHeader[0][0][9] == "total_amount" && $validateCompanyHeader[0][0][10] == "invoice_description") {
                         $adiStoreAsArray = Excel::toArray(new AdiImport(), $companyFile);
                         $notMatch = $adiStoreAsArray[0];
+//                        foreach ($adiStoreAsArray[0] as $key => $adiData) {
+//                            foreach ($selectNeedData as $key2 => $builderData) {
+//                                if ($builderData['jobs'] != null) {
+//                                    if ($builderData['jobs'] == $adiData['AID']) {
+//                                        array_push($match, $adiData);
+//                                        unset($notDuplicate[$key]);
+//                                        unset($notMatch[$key]);
+//                                    }
+//                                }
+//                            }
+//                        }
+                        $jobsMap = [];
+                        foreach ($buildingStoreAsArray[0] as $builderData) {
+                            if ($builderData['jobs'] != null) {
+                                $jobsMap[$builderData['jobs']] = $builderData;
+                            }
+                        }
+
+                        // Step 2: Compare $cfoStoreAsArray against the hash map
                         foreach ($adiStoreAsArray[0] as $key => $adiData) {
-                            foreach ($selectNeedData as $key2 => $builderData) {
-                                if ($builderData['jobs'] != null) {
-                                    if ($builderData['jobs'] == $adiData['AID']) {
-                                        array_push($match, $adiData);
-                                        unset($notDuplicate[$key]);
-                                        unset($notMatch[$key]);
-                                    }
-                                }
+                            if (isset($jobsMap[$adiData['AID']])) {
+                                array_push($match, $adiData);
+                                unset($notDuplicate[$key]);
+                                unset($notMatch[$key]);
                             }
                         }
                         $companyHeader = ['AID','SID','Customer Name','Qty','Amount','VAT','Total Amount','Invoice Description','Date Start','Date To'];
@@ -331,22 +349,36 @@ class ImportFileController extends Controller
                         $telecomStoreAsArray = Excel::toArray(new TelecomImport(), $companyFile);
                         $notMatch = $telecomStoreAsArray[0];
 
-                        foreach ($telecomStoreAsArray[0] as $key => $telecomData) {
-                                    foreach ($selectNeedData as $key2 => $builderData) {
-                                        if ($builderData['jobs'] != null) {
-                                            if ($builderData['jobs'] == $telecomData['ID']) {
-                                                array_push($match, $telecomData);
-                                                unset($notDuplicate[$key]);
-                                                unset($notMatch[$key]);
-
-//                                                array_push($match, $tctData);
+//                        foreach ($telecomStoreAsArray[0] as $key => $telecomData) {
+//                                    foreach ($selectNeedData as $key2 => $builderData) {
+//                                        if ($builderData['jobs'] != null) {
+//                                            if ($builderData['jobs'] == $telecomData['ID']) {
+//                                                array_push($match, $telecomData);
 //                                                unset($notDuplicate[$key]);
 //                                                unset($notMatch[$key]);
-                                            }
-                                        }
-                                    }
-                                }
+//
+////                                                array_push($match, $tctData);
+////                                                unset($notDuplicate[$key]);
+////                                                unset($notMatch[$key]);
+//                                            }
+//                                        }
+//                                    }
+//                                }
+                        $jobsMap = [];
+                        foreach ($buildingStoreAsArray[0] as $builderData) {
+                            if ($builderData['jobs'] != null) {
+                                $jobsMap[$builderData['jobs']] = $builderData;
+                            }
+                        }
 
+                        // Step 2: Compare $cfoStoreAsArray against the hash map
+                        foreach ($telecomStoreAsArray[0] as $key => $telecomData) {
+                            if (isset($jobsMap[$telecomData['ID']])) {
+                                array_push($match, $telecomData);
+                                unset($notDuplicate[$key]);
+                                unset($notMatch[$key]);
+                            }
+                        }
 
                         $companyHeader = ['Account No','ID','Name Customer','Project','Issue Date','Complete Date'];
 

@@ -27,7 +27,7 @@ class BillSheet implements FromArray, WithHeadings, WithTitle
     }
     public function headings(): array
     {
-        return ['ID','Name', 'Active' , 'Date' , 'Infrastructure', 'Jobs'];
+        return [' ','ID','Name', 'Active' , 'Date' , 'Infrastructure', 'Jobs'];
     }
     public function title(): string{
         return 'Bill';
