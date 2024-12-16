@@ -12,21 +12,21 @@ use Maatwebsite\Excel\Sheet;
 class MainSheet implements withMultipleSheets
 {
     protected array $duplicate= [];
-    protected array $notDuplicate= [];
+    protected array $billFilter= [];
     private array $other=[];
     private array $companyHeader=[];
 
-    public function __construct(array $duplicate, array $notDuplicate, array $other, array $companyHeader)
+    public function __construct(array $duplicate, array $billFilter, array $other, array $companyHeader)
     {
         $this->duplicate= $duplicate;
-        $this->notDuplicate= $notDuplicate;
+        $this->billFilter= $billFilter;
         $this->other= $other;
         $this->companyHeader = $companyHeader;
     }
     public function sheets(): array
     {
         return [
-           'Check'=> new Sheets\BillSheet($this->notDuplicate),
+           'Check'=> new Sheets\BillSheet($this->billFilter),
            'Pay'=>  new Sheets\MatchSheet($this->duplicate, $this->companyHeader),
             'Other'=> new NotMatchSheet($this->other, $this->companyHeader),
         ];
